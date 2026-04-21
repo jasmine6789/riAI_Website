@@ -33,11 +33,12 @@ export default function FluidScene({ videoRef }) {
   return (
     <Canvas
       className="owl-fluid-canvas"
-      dpr={[1, 2]}
+      dpr={[1, 1.5]}
       gl={{
         alpha: true,
-        antialias: true,
+        antialias: false,
         powerPreference: "high-performance",
+        stencil: false,
       }}
       camera={{ position: [0, 0, 1.25], fov: 38, near: 0.01, far: 50 }}
       style={{ width: "100%", height: "100%", display: "block" }}

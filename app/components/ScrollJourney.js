@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useCallback } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
@@ -8,6 +8,8 @@ import { setOwlLenis } from "@/lib/owlLenis";
 import CinematicVideoSection from "./CinematicVideoSection";
 import FluidRevealBackground from "./background/FluidRevealBackground";
 import SpatialCarouselFeatures from "./SpatialCarouselFeatures";
+import OryzoSection from "./OryzoSection";
+import UseCasesSection from "./UseCasesSection";
 // Register GSAP plugins
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -76,18 +78,10 @@ export default function ScrollJourney() {
   const bgSkyRef = useRef(null);
   const navRef = useRef(null);
 
-  // ========== CURSOR TRACKING ==========
-  const handleMouseMove = useCallback((e) => {
-    // Cursor light follows with GSAP easing
-    if (cursorLightRef.current) {
-      gsap.to(cursorLightRef.current, {
-        x: e.clientX,
-        y: e.clientY,
-        duration: 1.6,
-        ease: "power3.out",
-      });
-    }
-  }, []);
+  // ========== CURSOR TRACKING (ref + rAF + transform3d) ==========
+  const cursorTarget = useRef({ x: 0, y: 0 });
+  const cursorPos = useRef({ x: 0, y: 0 });
+  const cursorRaf = useRef(null);
 
   useLayoutEffect(() => {
     // ========== LENIS SMOOTH SCROLL ==========
@@ -110,8 +104,29 @@ export default function ScrollJourney() {
     });
     gsap.ticker.lagSmoothing(0);
 
-    // ========== CURSOR EVENTS ==========
-    window.addEventListener("mousemove", handleMouseMove);
+    // ========== CURSOR EVENTS (passive, ref-based) ==========
+    const lerpVal = (a, b, n) => (1 - n) * a + n * b;
+    const cursorTick = () => {
+      cursorPos.current.x = lerpVal(cursorPos.current.x, cursorTarget.current.x, 0.08);
+      cursorPos.current.y = lerpVal(cursorPos.current.y, cursorTarget.current.y, 0.08);
+      if (cursorLightRef.current) {
+        cursorLightRef.current.style.transform =
+          `translate3d(${cursorPos.current.x}px, ${cursorPos.current.y}px, 0) translate(-50%, -50%)`;
+      }
+      const dx = cursorTarget.current.x - cursorPos.current.x;
+      const dy = cursorTarget.current.y - cursorPos.current.y;
+      if (dx * dx + dy * dy > 0.01) {
+        cursorRaf.current = requestAnimationFrame(cursorTick);
+      } else {
+        cursorRaf.current = null;
+      }
+    };
+    const handleMouseMove = (e) => {
+      cursorTarget.current.x = e.clientX;
+      cursorTarget.current.y = e.clientY;
+      if (!cursorRaf.current) cursorRaf.current = requestAnimationFrame(cursorTick);
+    };
+    window.addEventListener("pointermove", handleMouseMove, { passive: true });
 
     // ========== NAV SCROLL STATE ==========
     const nav = navRef.current;
@@ -293,13 +308,14 @@ export default function ScrollJourney() {
 
     // ========== CLEANUP ==========
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("pointermove", handleMouseMove);
+      if (cursorRaf.current) cancelAnimationFrame(cursorRaf.current);
       window.removeEventListener("resize", handleResize);
       ScrollTrigger.getAll().forEach((st) => st.kill());
       setOwlLenis(null);
       lenis.destroy();
     };
-  }, [handleMouseMove]);
+  }, []);
 
   return (
     <>
@@ -478,23 +494,16 @@ export default function ScrollJourney() {
           </div>
         </section>
 
-        {/* ===== STATS SECTION ===== */}
-        <section className="section-stats">
-          <div className="glass-card stats-card">
-            <div className="stat-item">
-              <span className="stat-number">6</span>
-              <span className="stat-label">Depth Layers</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">∞</span>
-              <span className="stat-label">Scroll Moments</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">1</span>
-              <span className="stat-label">Owl&apos;s Journey</span>
-            </div>
-          </div>
-        </section>
+        {/* ===== PRECEDING TEXT + USE CASES SECTION (AuXie) ===== */}
+        <div className="auxie-preceding-text">
+          <p>
+            Every journey begins with a single glance upward. Move your cursor. Scroll the page. Watch the clouds part and the sky reveal itself, one layer at a time.
+          </p>
+        </div>
+        <UseCasesSection />
+
+        {/* ===== ORYZO SCROLL-DRIVEN SECTION ===== */}
+        <OryzoSection />
 
         {/* ===== CTA SECTION ===== */}
         <section className="section-cta" id="contact">

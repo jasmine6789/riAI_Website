@@ -1,3 +1,5 @@
+precision mediump float;
+
 uniform sampler2D uMaskTex;
 uniform sampler2D uTopTex;
 uniform sampler2D uBottomTex;
@@ -33,7 +35,7 @@ float fbm(vec2 p) {
   float value = 0.0;
   float amp = 0.5;
   mat2 rot = mat2(0.82, 0.57, -0.57, 0.82);
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 3; i++) {
     value += amp * noise(p);
     p = rot * p * 2.05 + 11.4;
     amp *= 0.5;
@@ -53,6 +55,7 @@ void main() {
     fbm(uv * 3.0 + vec2(0.0, uTime * 0.07)) - 0.5,
     fbm(uv * 3.0 + vec2(uTime * 0.05, 0.0)) - 0.5
   );
+  float flowMag = length(flow);
 
   float boundary = smoothstep(0.25, 0.75, mask) * (1.0 - smoothstep(0.75, 1.0, mask));
   float localWarp = (boundary + mask * 0.45) * uDistortionStrength;
@@ -64,8 +67,8 @@ void main() {
   vec2 topUv = uv * uTopTextureScale;
   vec4 topTex = texture2D(uTopTex, topUv);
 
-  float topNoise = fbm(uv * 4.0 + uTime * 0.05);
-  vec3 fogBase = vec3(0.953, 0.962, 0.975);
+  float topNoise = flowMag;
+  vec3 fogBase = vec3(0.906, 0.914, 0.871); // Updated to warm cream/beige
   vec3 fogLift = vec3(1.0) * (0.03 + topNoise * 0.06);
   float fogMix = uTopLayerOpacity * (1.0 - smoothstep(0.06, 0.62, mask));
   vec3 topLayer = mix(fogBase, topTex.rgb * 0.92 + fogLift, fogMix);
@@ -81,12 +84,12 @@ void main() {
   rgb = mix(rgb, bottomSharp.rgb, clearCore);
   // Keep a very faint mist path so reveals still feel atmospheric.
   float pathBand = smoothstep(0.1, 0.42, mask) * (1.0 - smoothstep(0.6, 0.92, mask));
-  float pathNoise = fbm(uv * 5.2 + flow * 1.2 + uTime * 0.12);
+  float pathNoise = flowMag * 0.8 + noise(uv * 5.2 + flow) * 0.2;
   float pathMist = pathBand * (0.012 + pathNoise * 0.01);
   rgb = mix(rgb, topLayer, pathMist);
 
   float edge = smoothstep(0.33, 0.58, mask) * (1.0 - smoothstep(0.58, 0.86, mask));
-  vec3 edgeLight = vec3(0.95, 0.97, 1.0) * edge * uEdgeGlow * (1.0 - clearCore * 0.85);
+  vec3 edgeLight = vec3(0.98, 0.99, 0.95) * edge * uEdgeGlow * (1.0 - clearCore * 0.85);
 
   // Keep hidden layer crisp; no blur/tint mix over revealed interiors.
   rgb += edgeLight;

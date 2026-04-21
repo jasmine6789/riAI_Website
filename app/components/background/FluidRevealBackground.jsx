@@ -113,11 +113,12 @@ export default function FluidRevealBackground({
       <Canvas
         orthographic
         camera={{ position: [0, 0, 5], zoom: 100, near: 0.1, far: 20 }}
-        dpr={[1, 2]}
+        dpr={[1, 1.5]}
         gl={{
-          antialias: true,
+          antialias: false,
           alpha: false,
           powerPreference: "high-performance",
+          stencil: false,
         }}
       >
         <Suspense fallback={null}>

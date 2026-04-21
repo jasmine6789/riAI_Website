@@ -1,0 +1,515 @@
+/* ════════════════════════════════════════════════════════
+   ORYZO SECTION — Cinematic Full-Screen → Magazine Card
+   ════════════════════════════════════════════════════════
+   Scroll 0%  → Video covers entire viewport (immersive hero)
+   Scroll 100%→ Compact magazine card with typography visible
+   ════════════════════════════════════════════════════════ */
+
+/* ──── SCROLL TRACK ──── */
+.oryzo-mag {
+  position: relative;
+  width: 100%;
+  height: 300vh; /* 3× viewport scroll runway */
+  z-index: 10;
+}
+
+/* ──── STICKY VIEWPORT ──── */
+.oryzo-mag__sticky {
+  position: sticky;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  /* Transparent base — reveals global site background as card shrinks */
+  background: transparent;
+}
+
+/* ──── BACKGROUND GLOW REMOVED ──── */
+/* ──── LEFT COLUMN: TYPOGRAPHY ──── */
+.oryzo-mag__left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 35%; /* Wider to accommodate blur */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 48px;
+  z-index: 20;
+  pointer-events: none;
+  
+  /* Frosted Glass Blur overlay */
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  background: transparent;
+  
+  /* Soft gradient fade on the right edge */
+  mask-image: linear-gradient(to right, black 0%, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 85%, transparent 100%);
+}
+
+/* --- Text Block A (Initial Hero Text) --- */
+.oryzo-mag__text-a {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 48px;
+  opacity: 1; /* GSAP controls */
+  will-change: transform, opacity;
+}
+
+.oryzo-mag__icon-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(42, 54, 68, 0.08);
+  border: 1px solid rgba(42, 54, 68, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2a3644;
+  margin-bottom: 28px;
+}
+
+.oryzo-mag__heading-a {
+  font-family: var(--font-display);
+  font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+  font-weight: 600;
+  color: #2a3644;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.oryzo-mag__body-a {
+  font-family: var(--font-body);
+  font-size: clamp(0.85rem, 1vw, 1rem);
+  font-weight: 300;
+  color: #4a5568;
+  line-height: 1.7;
+  max-width: 320px;
+  margin-bottom: 40px;
+}
+
+.oryzo-mag__separator {
+  width: 100%;
+  max-width: 320px;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(42, 54, 68, 0.3) 50%, transparent 50%);
+  background-size: 8px 1px;
+  margin-bottom: 40px;
+}
+
+.oryzo-mag__subheading-a {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: 400;
+  color: #2a3644;
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+
+.oryzo-mag__dot-a {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #2a3644;
+}
+
+/* --- Text Block B (fades IN later) --- */
+.oryzo-mag__text-b {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 48px;
+  opacity: 0; /* GSAP controls */
+  will-change: transform, opacity;
+}
+
+/* --- Thumbnails --- */
+.oryzo-mag__thumbnails {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.oryzo-mag__thumbnail {
+  width: 140px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.oryzo-mag__thumbnail:hover {
+  opacity: 1;
+}
+
+.oryzo-mag__label-b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+  font-weight: 600;
+  color: #2a3644;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.oryzo-mag__heading-b {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.5vw, 3.2rem);
+  font-weight: 300;
+  color: #2a3644;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+/* ════════════════════════════════════════════
+   MEDIA WRAPPER
+   Starts: 100vw × 100vh, top:0 left:0 (full viewport)
+   Ends:   48vw × 78vh, positioned right-of-center via GSAP
+   ════════════════════════════════════════════ */
+.oryzo-mag__media {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 10;
+  will-change: width, height, top, left, border-radius, box-shadow;
+}
+
+/* Inner wrapper for the cinematic zoom effect */
+.oryzo-mag__video-inner {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  will-change: transform;
+  transform: scale(1.08); /* cinematic initial zoom */
+}
+
+.oryzo-mag__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+/* ════════════════════════════════════════════
+   MAGAZINE UI OVERLAY
+   Starts: invisible (opacity 0, slight scale-down)
+   Ends:   fully visible, crisp
+   ════════════════════════════════════════════ */
+.oryzo-mag__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0; /* GSAP controls */
+  will-change: transform, opacity;
+}
+
+/* Dotted border frame */
+.oryzo-mag__frame {
+  position: absolute;
+  inset: 8px;
+  border: 1.5px dashed rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Top Right Dot */
+.oryzo-mag__top-right-dot {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 6px;
+  height: 6px;
+  background-color: #fff;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+/* === "RISE" Title === */
+.oryzo-mag__title {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 14vw, 11rem);
+  font-weight: 700;
+  color: #f5efe6;
+  letter-spacing: 0.08em;
+  line-height: 0.85;
+  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  white-space: nowrap;
+}
+
+/* === Issue Number === */
+.oryzo-mag__issue {
+  position: absolute;
+  top: 11%;
+  right: 24px;
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: rgba(245, 239, 230, 0.7);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+/* === Feature Box (right side) === */
+.oryzo-mag__feature-box {
+  position: absolute;
+  top: 20%;
+  right: 20px;
+  width: 90px;
+  background: rgba(245, 239, 230, 0.12);
+  /* Keeping blur small per perf playbook */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(245, 239, 230, 0.15);
+  padding: 14px 12px;
+  text-align: center;
+  z-index: 2;
+}
+
+.oryzo-mag__feature-number {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #f5efe6;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.oryzo-mag__feature-text {
+  font-family: var(--font-body);
+  font-size: 0.5rem;
+  font-weight: 500;
+  color: rgba(245, 239, 230, 0.75);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+/* === Center Headline === */
+.oryzo-mag__headline {
+  position: absolute;
+  top: 42%;
+  left: 24px;
+  z-index: 2;
+}
+
+.oryzo-mag__headline-pre {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  font-weight: 400;
+  font-style: italic;
+  color: #f5efe6;
+  margin-bottom: -4px;
+}
+
+.oryzo-mag__headline-main {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  color: #f5efe6;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* === Bottom-Left: Issue Circle and Subheadline === */
+.oryzo-mag__bottom-left {
+  position: absolute;
+  bottom: 8%;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 2;
+}
+
+.oryzo-mag__subheadline {
+  font-family: var(--font-body);
+  font-size: 0.55rem;
+  font-weight: 600;
+  color: rgba(245, 239, 230, 0.75);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.6;
+}
+
+.oryzo-mag__issue-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid rgba(245, 239, 230, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.oryzo-mag__issue-no-label {
+  font-family: var(--font-display);
+  font-size: 0.55rem;
+  font-style: italic;
+  color: rgba(245, 239, 230, 0.7);
+  line-height: 1;
+}
+
+.oryzo-mag__issue-no-label sup {
+  font-size: 0.4rem;
+}
+
+.oryzo-mag__issue-no-value {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: #f5efe6;
+  line-height: 1;
+  margin-top: -2px;
+}
+
+/* === Bottom-Center: Product + Barcode === */
+.oryzo-mag__bottom-center {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  z-index: 2;
+}
+
+.oryzo-mag__product-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.oryzo-mag__product-name {
+  font-family: var(--font-body);
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-weight: 600;
+  color: #f5efe6;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.oryzo-mag__product-desc {
+  font-family: var(--font-body);
+  font-size: 0.45rem;
+  font-weight: 400;
+  color: rgba(245, 239, 230, 0.6);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.6;
+}
+
+.oryzo-mag__barcode {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1px;
+  height: 28px;
+}
+
+.oryzo-mag__barcode-line {
+  display: inline-block;
+  background: rgba(245, 239, 230, 0.7);
+}
+
+/* ──── SCROLL HINT ──── */
+.oryzo-mag__scroll-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(245, 239, 230, 0.5);
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  z-index: 30;
+  will-change: opacity;
+}
+
+/* ════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .oryzo-mag__left {
+    width: 35%;
+    padding: 40px 32px;
+  }
+
+  .oryzo-mag__title {
+    font-size: clamp(3.5rem, 10vw, 7rem);
+  }
+
+  .oryzo-mag__text-b {
+    left: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* On mobile the left column overlays the bottom */
+  .oryzo-mag__left {
+    width: 100%;
+    padding: 24px;
+    top: auto;
+    bottom: 0;
+    height: auto;
+    z-index: 25;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.5) 60%,
+      transparent 100%
+    );
+  }
+
+  .oryzo-mag__text-b {
+    left: 24px;
+    top: auto;
+    bottom: 24px;
+  }
+
+  .oryzo-mag__title {
+    font-size: clamp(3rem, 14vw, 5rem);
+  }
+
+  .oryzo-mag__feature-box {
+    width: 70px;
+    padding: 10px 8px;
+  }
+
+  .oryzo-mag__feature-number {
+    font-size: 1.6rem;
+  }
+
+  .oryzo-mag__issue-circle {
+    width: 50px;
+    height: 50px;
+  }
+}

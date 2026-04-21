@@ -1,3 +1,5 @@
+precision mediump float;
+
 uniform sampler2D uPrevMask;
 uniform vec2 uPointer;
 uniform vec2 uVelocity;
@@ -39,7 +41,7 @@ float fbm(vec2 p) {
   float value = 0.0;
   float amp = 0.5;
   mat2 rot = mat2(0.8, 0.6, -0.6, 0.8);
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 3; i++) {
     value += noise(p) * amp;
     p = rot * p * 2.03 + 7.13;
     amp *= 0.5;

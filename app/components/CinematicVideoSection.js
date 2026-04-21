@@ -39,7 +39,8 @@ export default function CinematicVideoSection({
   const fsCursorMarkRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [playHovered, setPlayHovered] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
+  const currentTimeRef = useRef(0);
+  const progressSliderRef = useRef(null);
   const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -233,7 +234,14 @@ export default function CinematicVideoSection({
       setDuration(Number.isFinite(v.duration) ? v.duration : 0);
     };
     const syncTime = () => {
-      setCurrentTime(v.currentTime || 0);
+      currentTimeRef.current = v.currentTime || 0;
+      // Drive progress slider via ref + CSS custom property (no React re-render)
+      const d = Number.isFinite(v.duration) ? v.duration : 0;
+      if (d > 0 && progressSliderRef.current) {
+        const pct = (currentTimeRef.current / d) * 100;
+        progressSliderRef.current.value = pct;
+        progressSliderRef.current.style.setProperty('--owl-fs-progress', pct);
+      }
     };
     const syncMute = () => {
       setIsMuted(!!v.muted);
@@ -278,7 +286,7 @@ export default function CinematicVideoSection({
     [openFullscreen]
   );
 
-  const progressValue = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const progressValue = duration > 0 ? (currentTimeRef.current / duration) * 100 : 0;
 
   const onProgressInput = useCallback((e) => {
     const v = videoRef.current;
@@ -286,7 +294,7 @@ export default function CinematicVideoSection({
     const nextPct = Number(e.target.value);
     const nextTime = (nextPct / 100) * duration;
     v.currentTime = nextTime;
-    setCurrentTime(nextTime);
+    currentTimeRef.current = nextTime;
   }, [duration]);
 
   const toggleMute = useCallback((e) => {
@@ -403,11 +411,12 @@ export default function CinematicVideoSection({
               {isPlaying ? "Play" : "Paused"}
             </button>
             <input
+              ref={progressSliderRef}
               type="range"
               min="0"
               max="100"
               step="0.1"
-              value={progressValue}
+              defaultValue={progressValue}
               onChange={onProgressInput}
               className="owl-cinema__fs-progress"
               aria-label="Video progress"

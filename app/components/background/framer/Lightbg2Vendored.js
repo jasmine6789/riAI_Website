@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * Vendored from:
  * https://framerusercontent.com/modules/IcDD4nCnCPIBJHcS8cHx/F0ohASRCC9KSNnI5PTy7/ulf1rzLsH.js

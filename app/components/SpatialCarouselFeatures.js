@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { animate, motion, useMotionValue, useMotionValueEvent } from "framer-motion";
+import { animate, motion, useMotionValue } from "framer-motion";
 import { getOwlLenis } from "@/lib/owlLenis";
 
 const FEATURE_CARD_BACKGROUND = "rgba(239, 230, 212, 0.9)";
@@ -111,16 +111,11 @@ export default function SpatialCarouselFeatures({
 
   const count = items.length;
   const [activeIndex, setActiveIndex] = useState(0);
-  const [virtualIndex, setVirtualIndex] = useState(0);
   const virtualIndexMotion = useMotionValue(0);
 
-  useMotionValueEvent(virtualIndexMotion, "change", (value) => {
-    setVirtualIndex(value);
-  });
-
   const cardStates = useMemo(
-    () => items.map((_, index) => getCardState(index, virtualIndex, count)),
-    [items, virtualIndex, count],
+    () => items.map((_, index) => getCardState(index, activeIndex, count)),
+    [items, activeIndex, count],
   );
 
   const isLockStageActive = () => {
