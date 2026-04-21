@@ -6,10 +6,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { setOwlLenis } from "@/lib/owlLenis";
 import CinematicVideoSection from "./CinematicVideoSection";
+import CinematicEditorialGallery from "./CinematicEditorialGallery";
 import FluidRevealBackground from "./background/FluidRevealBackground";
 import SpatialCarouselFeatures from "./SpatialCarouselFeatures";
 import OryzoSection from "./OryzoSection";
 import UseCasesSection from "./UseCasesSection";
+import FilterableGallerySection from "./FilterableGallerySection";
 // Register GSAP plugins
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -172,22 +174,6 @@ export default function ScrollJourney() {
       });
     }
 
-    // ========== VIDEO CARD PARALLAX ==========
-    // ========== GALLERY CARD PARALLAX ==========
-    const galleryCards = document.querySelectorAll(".gallery-card");
-    galleryCards.forEach((card, i) => {
-      gsap.to(card, {
-        y: -(15 + i * 5),
-        ease: "none",
-        scrollTrigger: {
-          trigger: card,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 2,
-        },
-      });
-    });
-
     // Fade scroll indicator on scroll
     gsap.to(".scroll-indicator", {
       opacity: 0,
@@ -201,41 +187,6 @@ export default function ScrollJourney() {
 
     // ========== SECTION REVEALS ==========
     // (Video showcase section handles its own animation & pinning.)
-
-    // Gallery cards reveal
-    galleryCards.forEach((card, i) => {
-      gsap.to(card, {
-        opacity: 1,
-        y: 0,
-        duration: 0.9,
-        delay: i * 0.1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: card,
-          start: "top 85%",
-          toggleActions: "play none none none",
-        },
-      });
-    });
-
-    // Gallery header
-    const galleryHeader = document.querySelectorAll(
-      ".gallery-header .section-label, .gallery-header .section-heading, .gallery-header .section-desc"
-    );
-    galleryHeader.forEach((el, i) => {
-      gsap.to(el, {
-        opacity: 1,
-        y: 0,
-        duration: 0.9,
-        delay: i * 0.1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: el,
-          start: "top 85%",
-          toggleActions: "play none none none",
-        },
-      });
-    });
 
     // Features section
     const featuresHeader = document.querySelectorAll(
@@ -410,69 +361,12 @@ export default function ScrollJourney() {
           headline="A cinematic journey, centered with intent."
           subtext="Scroll to bring the frame into focus, then click to watch fullscreen. The transition uses strict bounding-box calculations for seamless expansion."
         />
-        {/* ===== GALLERY / IMAGE CARDS SECTION ===== */}
-        <section className="section-gallery" id="gallery">
-          <div className="gallery-header">
-            <span className="section-label">Gallery</span>
-            <h2 className="section-heading">
-              Moments captured between earth and sky
-            </h2>
-            <p className="section-desc">
-              Each frame floats independently — isolated, elevated,
-              suspended in the quiet atmosphere of the journey.
-            </p>
-          </div>
 
-          <div className="gallery-grid">
-            <div className="glass-card gallery-card">
-              <div className="gallery-card-inner">
-                <img
-                  src="/Background/BlueSky.png"
-                  alt="Dawn breaking through clouds"
-                />
-              </div>
-              <div className="gallery-card-content">
-                <h3>First Light</h3>
-                <p>
-                  The earliest moments of flight, when the world below is
-                  still draped in morning mist.
-                </p>
-              </div>
-            </div>
+        {/* ===== CINEMATIC EDITORIAL GALLERY ===== */}
+        <CinematicEditorialGallery />
 
-            <div className="glass-card gallery-card">
-              <div className="gallery-card-inner">
-                <img
-                  src="/Background/BlueSky.png"
-                  alt="Soaring through cloud layers"
-                />
-              </div>
-              <div className="gallery-card-content">
-                <h3>Cloud Passage</h3>
-                <p>
-                  Threading through veils of vapor, where visibility
-                  narrows to just wingspans ahead.
-                </p>
-              </div>
-            </div>
-
-            <div className="glass-card gallery-card">
-              <div className="gallery-card-inner">
-                <img
-                  src="/Background/BlueSky.png"
-                  alt="Open sky above the clouds"
-                />
-              </div>
-              <div className="gallery-card-content">
-                <h3>Above It All</h3>
-                <p>
-                  Breaking through the final layer into boundless blue —
-                  where the journey finds its clarity.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* ===== GALLERY / FILTERABLE IMAGE GRID ===== */}
+        <FilterableGallerySection />
 
         {/* ===== FEATURES SECTION ===== */}
         <section className="section-features" id="about">
