@@ -8,53 +8,14 @@ import { setOwlLenis } from "@/lib/owlLenis";
 import CinematicVideoSection from "./CinematicVideoSection";
 import CinematicEditorialGallery from "./CinematicEditorialGallery";
 import FluidRevealBackground from "./background/FluidRevealBackground";
-import SpatialCarouselFeatures from "./SpatialCarouselFeatures";
 import OryzoSection from "./OryzoSection";
 import UseCasesSection from "./UseCasesSection";
-import FilterableGallerySection from "./FilterableGallerySection";
 // Register GSAP plugins
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const FEATURE_ITEMS = [
-  {
-    icon: "🌫️",
-    title: "Cloud Masking",
-    description:
-      "A cursor-driven reveal system that gently brushes away clouds to expose the sky beneath — soft, diffused, and organic.",
-  },
-  {
-    icon: "✨",
-    title: "6-Layer Depth",
-    description:
-      "From the distant sky to floating cards, each layer moves at its own pace to create genuine atmospheric depth.",
-  },
-  {
-    icon: "🪶",
-    title: "Subtle Parallax",
-    description:
-      "Content cards float above the atmosphere with gentle parallax scrolling — each piece feeling isolated and elevated.",
-  },
-  {
-    icon: "💫",
-    title: "Ambient Motion",
-    description:
-      "Barely visible shapes drift through the layers, adding life and breath to the atmosphere without distraction.",
-  },
-  {
-    icon: "🎬",
-    title: "Cinematic Reveals",
-    description:
-      "Scroll-triggered entrance animations bring each section to life with slow, smooth, refined timing.",
-  },
-  {
-    icon: "🌊",
-    title: "Smooth Scrolling",
-    description:
-      "Lenis-powered scroll with custom easing curves ensures every interaction feels fluid and intentional.",
-  },
-];
+
 
 /**
  * ScrollJourney — 6-Layer Immersive Design
@@ -187,25 +148,6 @@ export default function ScrollJourney() {
 
     // ========== SECTION REVEALS ==========
     // (Video showcase section handles its own animation & pinning.)
-
-    // Features section
-    const featuresHeader = document.querySelectorAll(
-      ".features-header .section-label, .features-header .section-heading, .features-header .section-desc"
-    );
-    featuresHeader.forEach((el, i) => {
-      gsap.to(el, {
-        opacity: 1,
-        y: 0,
-        duration: 0.9,
-        delay: i * 0.1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: el,
-          start: "top 85%",
-          toggleActions: "play none none none",
-        },
-      });
-    });
 
     // Stats section
     const statsCard = document.querySelector(".stats-card");
@@ -364,29 +306,6 @@ export default function ScrollJourney() {
 
         {/* ===== CINEMATIC EDITORIAL GALLERY ===== */}
         <CinematicEditorialGallery />
-
-        {/* ===== GALLERY / FILTERABLE IMAGE GRID ===== */}
-        <FilterableGallerySection />
-
-        {/* ===== FEATURES SECTION ===== */}
-        <section className="section-features" id="about">
-          <div className="features-header">
-            <span className="section-label">About This Experience</span>
-            <h2 className="section-heading">
-              Built with depth, motion, and intention
-            </h2>
-            <p className="section-desc">
-              Every layer, every motion, every subtle shift is designed
-              to immerse you in the atmosphere of flight.
-            </p>
-          </div>
-
-          <div className="features-lock">
-            <div className="features-lock__sticky">
-              <SpatialCarouselFeatures items={FEATURE_ITEMS} />
-            </div>
-          </div>
-        </section>
 
         {/* ===== PRECEDING TEXT + USE CASES SECTION (AuXie) ===== */}
         <div className="auxie-preceding-text">
