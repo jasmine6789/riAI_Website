@@ -11,6 +11,8 @@ import FluidRevealBackground from "./background/FluidRevealBackground";
 import OryzoSection from "./OryzoSection";
 import UseCasesSection from "./UseCasesSection";
 import Header from "./Header";
+import PieterSplitSection from "./PieterSplitSection";
+import StickyStackingCardsSection from "./StickyStackingCardsSection";
 // Register GSAP plugins
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -292,13 +294,20 @@ export default function ScrollJourney() {
           </div>
         </section>
 
-        {/* ===== FOOTER ===== */}
-        <footer className="footer">
-          <p>
-            © 2026 Owl Journey. A scroll-driven storytelling experience.
-            Crafted with depth and intention.
-          </p>
-        </footer>
+        <PieterSplitSection />
+
+        {/* End of scroll narrative: card sequence, then footer in normal flow (no overlap with pinned stage) */}
+        <div className="site-end-cap">
+          <StickyStackingCardsSection />
+          <div className="site-footer-region" id="site-footer-region">
+            <footer className="footer" id="site-footer">
+              <p>
+                © 2026 Owl Journey. A scroll-driven storytelling experience.
+                Crafted with depth and intention.
+              </p>
+            </footer>
+          </div>
+        </div>
       </div>
     </>
   );
