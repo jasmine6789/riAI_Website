@@ -87,16 +87,16 @@ export default function PieterSplitSection() {
         <div className="pieter-split">
           <div className="pieter-split__left">
             <h2 className="pieter-split__heading">
-              <span>SELLING YOUR</span>
-              <span>PAINTING?</span>
+              <span>PROTECT YOUR</span>
+              <span>LEGACY?</span>
               <em>IT STARTS HERE</em>
             </h2>
             <p className="pieter-split__body">
-              At Pieter Koopt®, your artwork takes centre stage: we treat each piece with respect and personal
-              attention. Our goal is to offer a hassle-free sales process, so that the story of your artwork lives on.
+              At RIAI Capital, your financial future takes centre stage: we treat each portfolio with respect and personal
+              attention. Our goal is to offer a dynamic management process, so that your legacy lives on.
             </p>
-            <a className="pieter-split__cta" href="#contact">
-              <span>READ MORE ABOUT PIETER KOOPT</span>
+            <a className="pieter-split__cta" href="#about">
+              <span>READ MORE ABOUT RIAI CAPITAL</span>
               <span className="pieter-split__ctaArrow" aria-hidden="true">
                 ›
               </span>
@@ -106,15 +106,15 @@ export default function PieterSplitSection() {
           <div className="pieter-split__right">
             <article className="pieter-split__card pieter-split__card--one" ref={cardOneRef}>
               <h3>NO HIDDEN FEES</h3>
-              <p>You receive 100% of the offer.</p>
+              <p>Transparent pricing, 100% value focused.</p>
             </article>
             <article className="pieter-split__card pieter-split__card--two" ref={cardTwoRef}>
-              <h3>EXPERT ASSESSMENT AT HOME</h3>
-              <p>We come to you and arrange everything.</p>
+              <h3>AI-POWERED INSIGHTS</h3>
+              <p>Advanced intelligence monitoring your assets 24/7.</p>
             </article>
             <article className="pieter-split__card pieter-split__card--three" ref={cardThreeRef}>
-              <h3>FAST AND PERSONAL PROCESS</h3>
-              <p>A response to your submission within 48 hours.</p>
+              <h3>PERSONAL STRATEGY</h3>
+              <p>A bespoke plan tailored to your unique financial goals.</p>
             </article>
           </div>
         </div>

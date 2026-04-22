@@ -15,26 +15,26 @@ const STICKY_STACK_SCROLL_END_PX = 3600;
 const STEP_CARDS = [
   {
     number: "01",
-    titleMain: "UPLOAD YOUR",
-    titleAccent: "ARTWORK",
+    titleMain: "DISCOVERY &",
+    titleAccent: "ALIGNMENT",
     description:
-      "Take clear photos, tell the story behind your artwork and upload everything easily via our platform.",
+      "We begin by understanding your unique financial goals, risk tolerance, and long-term vision for your legacy.",
     image: "/Background/BlueSky.png",
   },
   {
     number: "02",
-    titleMain: "REVIEW",
-    titleAccent: "BY PIETER",
+    titleMain: "AI STRATEGY",
+    titleAccent: "MODELING",
     description:
-      "We carefully review your submission. If your painting qualifies, we'll arrange a personal viewing. You will hear from us within 48 hours.",
+      "Our advanced AI models analyze global markets to build a dynamically optimized portfolio tailored specifically to you.",
     image: "/Background/BlueSky.png",
   },
   {
     number: "03",
-    titleMain: "PERSONAL",
-    titleAccent: "APPOINTMENT",
+    titleMain: "DYNAMIC",
+    titleAccent: "OPTIMIZATION",
     description:
-      "If your artwork is suitable, we will schedule an appointment. Pieter will visit you together with a specialist and give you a fair offer straight away.",
+      "We continuously monitor and adjust your strategy in real-time, ensuring your wealth is protected and growing with precision.",
     image: "/Background/BlueSky.png",
   },
 ];
@@ -165,9 +165,9 @@ export default function StickyStackingCardsSection() {
     >
       <div className="sticky-stack-introStage">
         <header className="sticky-stack-intro">
-          <h2 className="sticky-stack-intro__title">SELLING PAINTINGS WITHOUT THE HASSLE</h2>
+          <h2 className="sticky-stack-intro__title">BUILDING WEALTH WITHOUT THE HASSLE</h2>
           <p className="sticky-stack-intro__copy">
-            At PieterKoopt®, we keep things simple, fast and transparent. Follow the steps below and we will take care of
+            At RIAI Capital, we keep things simple, fast and transparent. Follow the steps below and we will take care of
             the rest.
           </p>
         </header>
