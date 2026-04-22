@@ -1,0 +1,217 @@
+/* Header specific styles to replicate the requested design */
+.pk-page-frame {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.25); /* The fine line for the whole page */
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.pk-header {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  right: 24px;
+  height: 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  z-index: 9999;
+  font-family: var(--font-body), sans-serif;
+  pointer-events: none; /* Let clicks pass through empty spaces between groups */
+}
+
+/* User wants blurry background with black text and lines */
+.pk-box {
+  display: flex;
+  align-items: stretch;
+  background-color: rgba(255, 255, 255, 0.4); /* Blurry translucent background */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  pointer-events: auto; /* Re-enable clicks inside the boxes */
+}
+
+/* Ensure left and right sections fit content */
+.pk-header-left, .pk-header-right {
+  flex-shrink: 0;
+}
+
+.pk-header-left {
+  border-right: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.pk-header-center {
+  margin: 0 auto;
+  border-left: 1px solid rgba(0, 0, 0, 0.25);
+  border-right: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.pk-header-right {
+  border-left: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+/* Internal Vertical dividers */
+.pk-header-left > *:not(:last-child), 
+.pk-header-center > *:not(:last-child) {
+  border-right: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.pk-header-left > *, .pk-header-center > * {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-primary); /* Match hero text color */
+  text-decoration: none;
+}
+
+.pk-logo {
+  padding: 0 24px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+}
+
+/* Sound Button */
+.pk-sound-btn {
+  background: none;
+  border: none;
+  padding: 0 20px;
+  cursor: pointer;
+  outline: none;
+}
+.pk-sound-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.sound-bars {
+  display: flex;
+  align-items: center;
+  height: 16px;
+  gap: 2px;
+}
+
+.sound-bars .bar {
+  width: 2px;
+  background-color: var(--color-text-primary); /* Match hero text color */
+  height: 4px;
+  border-radius: 1px;
+  transition: height 0.2s ease;
+}
+
+/* Default state when not playing */
+.sound-bars .bar:nth-child(1) { height: 6px; }
+.sound-bars .bar:nth-child(2) { height: 10px; }
+.sound-bars .bar:nth-child(3) { height: 16px; }
+.sound-bars .bar:nth-child(4) { height: 8px; }
+.sound-bars .bar:nth-child(5) { height: 12px; }
+
+/* Playing state with animations */
+.pk-sound-btn.playing .bar {
+  animation-name: sound-bounce;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+}
+.pk-sound-btn.playing .bar:nth-child(1) { animation-duration: 0.4s; animation-delay: 0.0s; }
+.pk-sound-btn.playing .bar:nth-child(2) { animation-duration: 0.5s; animation-delay: 0.1s; }
+.pk-sound-btn.playing .bar:nth-child(3) { animation-duration: 0.3s; animation-delay: 0.2s; }
+.pk-sound-btn.playing .bar:nth-child(4) { animation-duration: 0.6s; animation-delay: 0.3s; }
+.pk-sound-btn.playing .bar:nth-child(5) { animation-duration: 0.4s; animation-delay: 0.4s; }
+
+@keyframes sound-bounce {
+  0% { height: 4px; }
+  100% { height: 16px; }
+}
+
+.pk-lang-btn {
+  background: none;
+  border: none;
+  padding: 0 16px;
+  color: var(--color-text-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pk-lang-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.pk-wa-btn {
+  padding: 0 16px;
+  color: var(--color-text-primary);
+}
+.pk-wa-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Center Group */
+.pk-header-center > * {
+  padding: 0 24px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  transition: background 0.2s ease;
+}
+.pk-header-center > *:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Right Group */
+.pk-offer-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 0 0 0 24px;
+  width: 100%;
+  height: 100%;
+  transition: background 0.2s ease;
+}
+.pk-offer-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.pk-offer-btn .arrow-box {
+  background-color: transparent; 
+  border-left: 1px solid rgba(0, 0, 0, 0.25); 
+  color: var(--color-text-primary);
+  width: 48px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.pk-offer-btn:hover .arrow-box {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 1024px) {
+  .pk-header-center {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .pk-page-frame {
+    top: 12px; left: 12px; right: 12px; bottom: 12px;
+  }
+  .pk-header {
+    top: 12px; left: 12px; right: 12px;
+  }
+  .pk-logo {
+    padding: 0 12px;
+  }
+  .pk-sound-btn, .pk-lang-btn, .pk-wa-btn {
+    padding: 0 12px;
+  }
+}

@@ -294,21 +294,23 @@ body {
   color: var(--color-text-primary);
   margin-bottom: 32px;
   max-width: 900px;
+  text-shadow: 0 2px 15px rgba(255, 255, 255, 0.4);
 }
 
 .hero-title em {
   font-style: italic;
   font-weight: 400;
-  color: #4a8cc7;
 }
 
 .hero-subtitle {
-  font-size: clamp(1rem, 1.8vw, 1.2rem);
-  font-weight: 300;
-  color: var(--color-text-secondary);
-  max-width: 560px;
-  line-height: 1.85;
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  font-weight: 400;
+  color: var(--color-text-primary);
+  max-width: 600px;
+  line-height: 1.75;
+  letter-spacing: -0.01em;
   margin-bottom: 52px;
+  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.5);
 }
 
 .hero-actions {
@@ -318,46 +320,50 @@ body {
 }
 
 .btn-primary {
-  padding: 14px 36px;
+  padding: 16px 40px;
   border-radius: 100px;
-  background: rgba(255, 255, 255, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  color: var(--color-text-primary);
+  background: var(--color-text-primary);
+  border: 1px solid var(--color-text-primary);
+  color: #ffffff;
   font-family: var(--font-body);
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: all var(--transition-fast);
+  transition: all var(--transition-fast) cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
+  box-shadow: 0 4px 15px rgba(44, 62, 80, 0.15);
 }
 
 .btn-primary:hover {
-  background: rgba(255, 255, 255, 0.45);
-  border-color: rgba(255, 255, 255, 0.55);
+  background: #1a2632;
+  border-color: #1a2632;
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 12px 30px rgba(44, 62, 80, 0.25);
 }
 
 .btn-ghost {
-  padding: 14px 28px;
-  background: transparent;
-  border: none;
-  color: var(--color-text-secondary);
+  padding: 16px 32px;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 100px;
+  border: 1px solid rgba(44, 62, 80, 0.1);
+  color: var(--color-text-primary);
   font-family: var(--font-body);
-  font-size: 0.95rem;
-  font-weight: 400;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast) cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .btn-ghost:hover {
-  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(44, 62, 80, 0.2);
+  transform: translateY(-2px);
 }
 
 .btn-ghost svg {

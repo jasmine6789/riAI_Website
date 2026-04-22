@@ -10,6 +10,7 @@ import CinematicEditorialGallery from "./CinematicEditorialGallery";
 import FluidRevealBackground from "./background/FluidRevealBackground";
 import OryzoSection from "./OryzoSection";
 import UseCasesSection from "./UseCasesSection";
+import Header from "./Header";
 // Register GSAP plugins
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -39,7 +40,6 @@ export default function ScrollJourney() {
   const progressBarRef = useRef(null);
   const cursorLightRef = useRef(null);
   const bgSkyRef = useRef(null);
-  const navRef = useRef(null);
 
   // ========== CURSOR TRACKING (ref + rAF + transform3d) ==========
   const cursorTarget = useRef({ x: 0, y: 0 });
@@ -90,21 +90,6 @@ export default function ScrollJourney() {
       if (!cursorRaf.current) cursorRaf.current = requestAnimationFrame(cursorTick);
     };
     window.addEventListener("pointermove", handleMouseMove, { passive: true });
-
-    // ========== NAV SCROLL STATE ==========
-    const nav = navRef.current;
-    ScrollTrigger.create({
-      start: "top -80",
-      onUpdate: (self) => {
-        if (nav) {
-          if (self.scroll() > 80) {
-            nav.classList.add("scrolled");
-          } else {
-            nav.classList.remove("scrolled");
-          }
-        }
-      },
-    });
 
     // ========== SCROLL PROGRESS ==========
     if (progressBarRef.current) {
@@ -235,54 +220,27 @@ export default function ScrollJourney() {
       {/* ============ LAYER 3: CURSOR AMBIENT LIGHT ============ */}
       <div className="cursor-light" ref={cursorLightRef} />
 
-      {/* ============ NAVIGATION ============ */}
-      <nav className="nav" ref={navRef} id="main-nav">
-        <a href="#" className="nav-logo">
-          Owl Journey
-        </a>
-        <ul className="nav-links">
-          <li>
-            <a href="#story">Story</a>
-          </li>
-          <li>
-            <a href="#gallery">Gallery</a>
-          </li>
-          <li>
-            <a href="#about">About</a>
-          </li>
-          <li>
-            <a href="#contact">Contact</a>
-          </li>
-        </ul>
-        <a href="#contact" className="nav-cta">
-          Explore
-        </a>
-      </nav>
+      {/* ============ HEADER ============ */}
+      <Header />
 
       {/* ============ LAYERS 5 & 6: SCROLLABLE CONTENT ============ */}
       <div className="scroll-container" ref={containerRef} id="scroll-container">
         {/* ===== HERO ===== */}
         <section className="hero" id="hero">
-          <div className="hero-badge">
-            <span className="hero-badge-dot" />
-            A Scroll-Driven Story
-          </div>
-
           <h1 className="hero-title">
-            Through the Clouds, <em>Into the Unknown</em>
+            Wealth Intelligence for a <em>Confident Future.</em>
           </h1>
 
           <p className="hero-subtitle">
-            Follow the journey of an owl soaring through layers of mist and
-            sky — an immersive, depth-driven experience crafted for wonder.
+            Human expertise, amplified by advanced AI, to dynamically build, protect, and optimize your financial legacy.
           </p>
 
           <div className="hero-actions">
             <a href="#story" className="btn-primary">
-              Begin the Journey
+              Start Your Strategy
             </a>
             <a href="#gallery" className="btn-ghost">
-              View Gallery
+              See How It Works
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M3 8h10M9 4l4 4-4 4" />
               </svg>
