@@ -5,9 +5,19 @@
   left: 24px;
   right: 24px;
   bottom: 24px;
-  border: 1px solid rgba(0, 0, 0, 0.25); /* The fine line for the whole page */
+  border: 1px solid rgba(0, 0, 0, 0.25); /* Hero-only frame; hidden past hero via JS */
   pointer-events: none;
   z-index: 9998;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pk-page-frame.pk-page-frame--hidden {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .pk-header {
@@ -22,6 +32,76 @@
   z-index: 9999;
   font-family: var(--font-body), sans-serif;
   pointer-events: none; /* Let clicks pass through empty spaces between groups */
+  transition:
+    top 0.55s cubic-bezier(0.25, 0.1, 0.25, 1),
+    left 0.55s cubic-bezier(0.25, 0.1, 0.25, 1),
+    right 0.55s cubic-bezier(0.25, 0.1, 0.25, 1),
+    height 0.55s cubic-bezier(0.25, 0.1, 0.25, 1),
+    box-shadow 0.55s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* After hero: bar docks flush to top/left/right — same 48px height as in-hero for identical size */
+.pk-header.is-scrolled {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  box-shadow: 0 4px 24px rgba(11, 37, 69, 0.18);
+}
+
+.pk-header.is-scrolled .pk-box {
+  background-color: var(--wm-navy, #0b2545);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.pk-header.is-scrolled .pk-header-left > *,
+.pk-header.is-scrolled .pk-header-center > *,
+.pk-header.is-scrolled .pk-header-right > * {
+  color: #faf8f3;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.pk-header.is-scrolled .pk-header-left > *:not(:last-child),
+.pk-header.is-scrolled .pk-header-center > *:not(:last-child) {
+  border-right-color: rgba(255, 255, 255, 0.12);
+}
+
+.pk-header.is-scrolled .pk-header-left,
+.pk-header.is-scrolled .pk-header-right {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.pk-header.is-scrolled .pk-header-center {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.pk-header.is-scrolled .pk-logo {
+  color: #faf8f3;
+}
+
+.pk-header.is-scrolled .sound-bars .bar {
+  background-color: #faf8f3;
+}
+
+.pk-header.is-scrolled .pk-sound-btn:hover,
+.pk-header.is-scrolled .pk-header-center > *:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pk-header.is-scrolled .pk-mobile-toggle__bar {
+  background: #faf8f3;
+}
+
+.pk-header.is-scrolled .pk-contact-cta {
+  color: #0b2545;
+  background: var(--wm-gold, #c9a961);
+  border-left-color: rgba(11, 37, 69, 0.15);
+}
+
+.pk-header.is-scrolled .pk-contact-cta:hover {
+  filter: brightness(1.05);
 }
 
 /* User wants blurry background with black text and lines */
@@ -127,26 +207,7 @@
   100% { height: 16px; }
 }
 
-.pk-lang-btn {
-  background: none;
-  border: none;
-  padding: 0 16px;
-  color: var(--color-text-primary);
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-.pk-lang-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.pk-wa-btn {
-  padding: 0 16px;
-  color: var(--color-text-primary);
-}
-.pk-wa-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
+/* M-01 / M-02: EN + WhatsApp removed from bar per tracker */
 
 /* Center Group */
 .pk-header-center > * {
@@ -160,45 +221,147 @@
   background: rgba(0, 0, 0, 0.05);
 }
 
-/* Right Group */
-.pk-offer-btn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--color-text-primary);
-  text-decoration: none;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  padding: 0 0 0 24px;
-  width: 100%;
-  height: 100%;
-  transition: background 0.2s ease;
-}
-.pk-offer-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
-}
-
-.pk-offer-btn .arrow-box {
-  background-color: transparent; 
-  border-left: 1px solid rgba(0, 0, 0, 0.25); 
-  color: var(--color-text-primary);
-  width: 48px;
-  height: 100%;
+/* M-03: Contact Us — primary gold pill */
+.pk-contact-cta {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s ease;
+  min-width: 140px;
+  padding: 0 28px;
+  height: 100%;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #0b2545;
+  background: var(--wm-gold, #c9a961);
+  border-left: 1px solid rgba(11, 37, 69, 0.12);
+  transition: filter 0.2s ease, background 0.2s ease;
 }
 
-.pk-offer-btn:hover .arrow-box {
-  background: rgba(0, 0, 0, 0.05);
+.pk-contact-cta:hover {
+  filter: brightness(1.06);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.pk-mobile-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 48px;
+  height: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.pk-mobile-toggle__bar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--color-text-primary);
+  border-radius: 1px;
+}
+
+.pk-mobile-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(11, 37, 69, 0.92);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 72px 24px 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.pk-mobile-drawer--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.pk-mobile-drawer__inner {
+  width: min(100%, 360px);
+  background: #faf8f3;
+  border-radius: 12px;
+  padding: 48px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+
+.pk-mobile-drawer__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #0b2545;
+}
+
+.pk-mobile-drawer__link {
+  display: block;
+  padding: 14px 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0b2545;
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+.pk-mobile-drawer__link:hover {
+  background: rgba(11, 37, 69, 0.06);
+}
+
+.pk-mobile-drawer__cta {
+  margin-top: 12px;
+  text-align: center;
+  padding: 14px;
+  border-radius: 999px;
+  background: var(--wm-gold, #c9a961);
+  color: #0b2545;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.06em;
 }
 
 @media (max-width: 1024px) {
   .pk-header-center {
     display: none;
   }
+
+  .pk-mobile-toggle {
+    display: flex;
+  }
+}
+
+body.pk-nav-mobile-open {
+  overflow: hidden;
 }
 
 @media (max-width: 768px) {
@@ -211,7 +374,7 @@
   .pk-logo {
     padding: 0 12px;
   }
-  .pk-sound-btn, .pk-lang-btn, .pk-wa-btn {
+  .pk-sound-btn {
     padding: 0 12px;
   }
 }

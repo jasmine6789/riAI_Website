@@ -1,6 +1,7 @@
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import "./oryzo.css";
+import CookieConsent from "./components/CookieConsent";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -15,13 +16,13 @@ const playfair = Playfair_Display({
 });
 
 export const metadata = {
-  title: "Owl Journey — A Scroll-Driven Story",
+  title: "riAI — Wealth intelligence for a confident future",
   description:
-    "An immersive 6-layer scroll experience with cursor-driven cloud masking, atmospheric depth, and floating content — a journey through the sky.",
-  keywords: ["scroll storytelling", "GSAP", "immersive design", "interactive website", "parallax"],
+    "Human expertise and thoughtful technology to help you plan, protect, and grow wealth—with clarity, not noise.",
+  keywords: ["wealth management", "financial planning", "riAI", "investment advisory", "India"],
   openGraph: {
-    title: "Owl Journey — A Scroll-Driven Story",
-    description: "Brush away the clouds and reveal the sky in this immersive scroll-driven experience.",
+    title: "riAI — Wealth intelligence for a confident future",
+    description: "A calm, premium experience for professionals, founders, and families who want clarity in their financial life.",
     type: "website",
   },
 };
@@ -29,7 +30,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <CookieConsent />
+      </body>
     </html>
   );
 }

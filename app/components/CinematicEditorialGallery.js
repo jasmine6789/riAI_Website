@@ -1,7 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { getOwlLenis } from "@/lib/owlLenis";
+import { SCROLL_END_EDITORIAL } from "@/app/lib/pinnedSectionConstants";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const DEFAULT_ASSETS = [
   "/Video_Photos/photo1.png",
@@ -12,7 +19,13 @@ const DEFAULT_ASSETS = [
   "/Video_Photos/photo6.png",
 ];
 
-const THUMBNAILS_PER_SIDE = 3;
+/** Side rail “filmstrip” count — wrapped modulo so rails never look empty */
+const THUMBNAILS_PER_SIDE = 5;
+
+function modIndex(i, total) {
+  if (total <= 0) return 0;
+  return ((i % total) + total) % total;
+}
 
 function clampIndex(index, total) {
   return Math.max(0, Math.min(total - 1, index));
@@ -20,7 +33,7 @@ function clampIndex(index, total) {
 
 export default function CinematicEditorialGallery({
   id = "gallery-editorial",
-  title = "Cinematic Editorial Gallery",
+  title = "Who we serve",
   assets = DEFAULT_ASSETS,
 }) {
   const total = assets.length;
@@ -28,6 +41,7 @@ export default function CinematicEditorialGallery({
   const [trackPosition, setTrackPosition] = useState(0);
   const [motionDirection, setMotionDirection] = useState(1);
 
+  const trackRef = useRef(null);
   const lockViewportRef = useRef(null);
   const lockStageActiveRef = useRef(false);
 
@@ -86,8 +100,10 @@ export default function CinematicEditorialGallery({
   useEffect(() => {
     if (total <= 1) return;
     const current = Math.round(trackPositionRef.current);
-    void ensureImageLoaded(assets[clampIndex(current + 1, total)]);
-    void ensureImageLoaded(assets[clampIndex(current - 1, total)]);
+    const spread = THUMBNAILS_PER_SIDE + 1;
+    for (let d = -spread; d <= spread; d += 1) {
+      void ensureImageLoaded(assets[modIndex(current + d, total)]);
+    }
   }, [assets, ensureImageLoaded, total, trackPosition]);
 
   const setLenisLocked = useCallback((locked) => {
@@ -110,6 +126,26 @@ export default function CinematicEditorialGallery({
     },
     [maxIndex],
   );
+
+  useLayoutEffect(() => {
+    const track = trackRef.current;
+    const stage = lockViewportRef.current;
+    if (!track || !stage) return undefined;
+
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        trigger: track,
+        start: "top top",
+        end: SCROLL_END_EDITORIAL,
+        pin: stage,
+        pinSpacing: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      });
+    }, track);
+
+    return () => ctx.revert();
+  }, []);
 
   useEffect(() => {
     let raf = 0;
@@ -264,38 +300,29 @@ export default function CinematicEditorialGallery({
   const fraction = Math.max(0, Math.min(1, snappedTrackPosition - Math.floor(snappedTrackPosition)));
   const movementDirection = motionDirection;
 
-  const passedIndices = useMemo(() => {
-    const arr = [];
-    for (let i = roundedIndex - 1; i >= Math.max(0, roundedIndex - THUMBNAILS_PER_SIDE); i -= 1) {
-      arr.push(i);
-    }
-    return arr;
-  }, [roundedIndex]);
+  // Left rail uses justify-content: flex-end, so the last DOM child sits next to the hero.
+  // Order indices left→right in DOM as [i-N, …, i-2, i-1] so the hero-adjacent thumb is always i-1
+  // (avoids i-1 and i+1 colliding when total divides THUMBNAILS_PER_SIDE).
+  const leftIndices = useMemo(() => {
+    if (total <= 0) return [];
+    return Array.from({ length: THUMBNAILS_PER_SIDE }, (_, s) =>
+      modIndex(roundedIndex - THUMBNAILS_PER_SIDE + s, total),
+    );
+  }, [roundedIndex, total]);
 
-  const upcomingIndices = useMemo(() => {
-    const arr = [];
-    for (let i = roundedIndex + 1; i <= Math.min(maxIndex, roundedIndex + THUMBNAILS_PER_SIDE); i += 1) {
-      arr.push(i);
-    }
-    return arr;
-  }, [maxIndex, roundedIndex]);
+  const rightIndices = useMemo(() => {
+    if (total <= 0) return [];
+    return Array.from({ length: THUMBNAILS_PER_SIDE }, (_, s) => modIndex(roundedIndex + 1 + s, total));
+  }, [roundedIndex, total]);
 
   const leftSlots = useMemo(
-    () =>
-      Array.from({ length: THUMBNAILS_PER_SIDE }, (_, slot) => ({
-        slot,
-        imageIndex: passedIndices[slot] ?? null,
-      })),
-    [passedIndices],
+    () => leftIndices.map((imageIndex, slot) => ({ slot, imageIndex })),
+    [leftIndices],
   );
 
   const rightSlots = useMemo(
-    () =>
-      Array.from({ length: THUMBNAILS_PER_SIDE }, (_, slot) => ({
-        slot,
-        imageIndex: upcomingIndices[slot] ?? null,
-      })),
-    [upcomingIndices],
+    () => rightIndices.map((imageIndex, slot) => ({ slot, imageIndex })),
+    [rightIndices],
   );
 
   const currentOpacity = lowerIndex === upperIndex ? 1 : 1 - fraction;
@@ -318,18 +345,19 @@ export default function CinematicEditorialGallery({
   const railShift = movementDirection >= 0 ? -fraction * 18 : fraction * 18;
 
   return (
-    <div className="editorial-gallery-lock" id={id}>
-      <div ref={lockViewportRef} className="editorial-gallery-lock__sticky">
+    <div ref={trackRef} className="editorial-gallery-lock pk-section-track" id={id} data-pk-pin-track>
+      <div ref={lockViewportRef} className="editorial-gallery-lock__sticky pk-section-stage">
         <section
           className="editorial-gallery"
           aria-label={title}
           tabIndex={0}
           onKeyDown={onSectionKeyDown}
         >
-          <div className="editorial-gallery__intro editorial-gallery__intro--right">
-            <h2 className="editorial-gallery__title">It&apos;s wearable</h2>
+          <div className="editorial-gallery__intro editorial-gallery__intro--lead">
+            <h2 className="editorial-gallery__title">Who we serve</h2>
             <p className="editorial-gallery__copy">
-              The center frame stays fixed as each next visual glides in from the rail, creating a deliberate cinematic sequence.
+              We work with individuals across professions, from educators to entrepreneurs, each with unique financial
+              goals and challenges.
             </p>
           </div>
 
@@ -340,17 +368,15 @@ export default function CinematicEditorialGallery({
                 style={{ transform: `translate3d(${railShift}%, 0, 0)` }}
               >
                 {leftSlots.map(({ slot, imageIndex }) => (
-                  imageIndex === null ? null : (
-                    <button
-                      key={`left-slot-${slot}`}
-                      type="button"
-                      className="editorial-gallery__thumb"
-                      aria-label={`Show image ${imageIndex + 1}`}
-                      onClick={() => onThumbnailSelect(imageIndex)}
-                    >
-                      <img src={assets[imageIndex]} alt={`Editorial frame ${imageIndex + 1}`} loading="eager" />
-                    </button>
-                  )
+                  <button
+                    key={`left-${slot}`}
+                    type="button"
+                    className="editorial-gallery__thumb"
+                    aria-label={`Show image ${imageIndex + 1}`}
+                    onClick={() => onThumbnailSelect(imageIndex)}
+                  >
+                    <img src={assets[imageIndex]} alt={`Editorial frame ${imageIndex + 1}`} loading="eager" />
+                  </button>
                 ))}
               </div>
             </div>
@@ -389,17 +415,15 @@ export default function CinematicEditorialGallery({
                 style={{ transform: `translate3d(${railShift}%, 0, 0)` }}
               >
                 {rightSlots.map(({ slot, imageIndex }) => (
-                  imageIndex === null ? null : (
-                    <button
-                      key={`right-slot-${slot}`}
-                      type="button"
-                      className="editorial-gallery__thumb"
-                      aria-label={`Show image ${imageIndex + 1}`}
-                      onClick={() => onThumbnailSelect(imageIndex)}
-                    >
-                      <img src={assets[imageIndex]} alt={`Editorial frame ${imageIndex + 1}`} loading="eager" />
-                    </button>
-                  )
+                  <button
+                    key={`right-${slot}`}
+                    type="button"
+                    className="editorial-gallery__thumb"
+                    aria-label={`Show image ${imageIndex + 1}`}
+                    onClick={() => onThumbnailSelect(imageIndex)}
+                  >
+                    <img src={assets[imageIndex]} alt={`Editorial frame ${imageIndex + 1}`} loading="eager" />
+                  </button>
                 ))}
               </div>
             </div>

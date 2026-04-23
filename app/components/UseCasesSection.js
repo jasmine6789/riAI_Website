@@ -6,11 +6,11 @@ import { useEffect, useRef, useState } from "react";
    USE CASES DATA
    ───────────────────────────────────────────── */
 const USE_CASES = [
-  { id: "p-1", number: "01", label: "Furniture brands" },
-  { id: "p-2", number: "02", label: "Interior concepts" },
-  { id: "p-3", number: "03", label: "Leisure industry" },
-  { id: "p-4", number: "04", label: "Fabric distribution" },
-  { id: "p-5", number: "05", label: "Manufacturing" },
+  { id: "wm-1", number: "01", label: "Wealth management" },
+  { id: "wm-2", number: "02", label: "Financial planning" },
+  { id: "wm-3", number: "03", label: "Portfolio Management" },
+  { id: "wm-4", number: "04", label: "Small Business Ownership" },
+  { id: "wm-5", number: "05", label: "Financial Education" },
 ];
 
 const IMAGES = [
@@ -36,15 +36,12 @@ export default function UseCasesSection() {
   };
 
   return (
-    <section className="auxie-usecases" id="use-cases-section" ref={sectionRef}>
+    <section className="auxie-usecases" id="what-we-do-section" ref={sectionRef}>
       <div className="auxie-usecases__inner">
         {/* ── LEFT COLUMN ── */}
         <div className="auxie-usecases__left">
           <div className="auxie-usecases__left-top">
-            <h3 className="auxie-usecases__eyebrow">Use Cases</h3>
-            <p className="auxie-usecases__heading">
-              Digitally transform your business with AuXie
-            </p>
+            <h2 className="auxie-usecases__heading">What we do</h2>
           </div>
 
           <div className="auxie-usecases__left-bottom">
@@ -88,7 +85,7 @@ export default function UseCasesSection() {
                 <img
                   className="auxie-usecases__image"
                   src={src}
-                  alt={`Use case ${i + 1}`}
+                  alt={USE_CASES[i]?.label ?? `Focus area ${i + 1}`}
                   style={{
                     transform: `translateY(${(i - activeIndex) * 100}%)`,
                   }}

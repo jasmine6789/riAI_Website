@@ -3,6 +3,7 @@
 import { useEffect, useRef, useMemo } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { usePinnedTrackOptional } from "@/app/components/pinned/PinnedSection";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -16,6 +17,7 @@ if (typeof window !== "undefined") {
    ──────────────────────────────────────────────────────────── */
 
 export default function OryzoSection() {
+  const pinnedTrack = usePinnedTrackOptional();
   const sectionRef = useRef(null);
   const mediaRef = useRef(null);
   const videoInnerRef = useRef(null);
@@ -35,10 +37,13 @@ export default function OryzoSection() {
   );
 
   useEffect(() => {
+    const triggerEl = pinnedTrack?.trackRef?.current ?? sectionRef.current;
+    if (!triggerEl) return undefined;
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: sectionRef.current,
+          trigger: triggerEl,
           start: "top top",
           end: "bottom bottom",
           scrub: 1.2,
@@ -101,7 +106,7 @@ export default function OryzoSection() {
         0.1
       );
 
-      /* Text B ("SO PORTABLE, it's wearable" + Thumbnails): fades IN later */
+      /* Text B ("SO PORTABLE, About the team"): fades IN later */
       tl.fromTo(
         textBRef.current,
         { opacity: 0, y: 30 },
@@ -118,13 +123,17 @@ export default function OryzoSection() {
         { opacity: 0, ease: "none", duration: 0.15 },
         0
       );
-    }, sectionRef);
+    }, triggerEl);
 
     return () => ctx.revert();
-  }, []);
+  }, [pinnedTrack]);
 
   return (
-    <section ref={sectionRef} className="oryzo-mag" id="oryzo-section">
+    <section
+      ref={sectionRef}
+      className={`oryzo-mag${pinnedTrack ? " oryzo-mag--inPinnedTrack" : ""}`}
+      id={pinnedTrack ? undefined : "oryzo-section"}
+    >
       {/* ── STICKY VIEWPORT ── */}
       <div className="oryzo-mag__sticky">
         {/* ── LEFT COLUMN: TYPOGRAPHY & BLUR ── */}
@@ -149,13 +158,7 @@ export default function OryzoSection() {
           {/* Text Block B — fades in later in the scroll */}
           <div ref={textBRef} className="oryzo-mag__text-b">
             <span className="oryzo-mag__label-b">SO PORTABLE,</span>
-            <h2 className="oryzo-mag__heading-b">
-              it&apos;s wearable
-            </h2>
-            <div className="oryzo-mag__thumbnails">
-              <img src="/person_biting_object.png" alt="Person biting object" className="oryzo-mag__thumbnail" />
-              <img src="/pocket_red_fabric.png" alt="Pocket on red fabric" className="oryzo-mag__thumbnail" />
-            </div>
+            <h2 className="oryzo-mag__heading-b">About the team</h2>
           </div>
         </div>
 

@@ -11,6 +11,7 @@ uniform float uDistortionStrength;
 uniform float uEdgeGlow;
 uniform float uTopTextureScale;
 uniform float uTopLayerOpacity;
+uniform float uBottomAspect;
 
 varying vec2 vUv;
 
@@ -61,7 +62,19 @@ void main() {
   float localWarp = (boundary + mask * 0.45) * uDistortionStrength;
   vec2 warp = flow * localWarp + velDir * speed * localWarp * 0.02;
 
-  vec2 uvBottom = uv + warp;
+  /* Center + cover: match marble / owl plate aspect to viewport (CSS object-fit: cover). */
+  float viewAR = uResolution.x / max(uResolution.y, 1.0);
+  float texAR = max(uBottomAspect, 0.001);
+  vec2 uvCover = uv;
+  if (texAR > viewAR) {
+    float scale = texAR / viewAR;
+    uvCover.x = (uvCover.x - 0.5) / scale + 0.5;
+  } else {
+    float scale = viewAR / texAR;
+    uvCover.y = (uvCover.y - 0.5) / scale + 0.5;
+  }
+
+  vec2 uvBottom = uvCover + warp;
   vec4 bottomSharp = texture2D(uBottomTex, uvBottom);
 
   vec3 rgb = bottomSharp.rgb;

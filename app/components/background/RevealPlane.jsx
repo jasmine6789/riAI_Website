@@ -47,13 +47,24 @@ export default function RevealPlane({
       uEdgeGlow: { value: edgeGlow },
       uTopTextureScale: { value: topTextureScale },
       uTopLayerOpacity: { value: topLayerOpacity },
+      uBottomAspect: { value: 1 },
     }),
     [bottomTexture, distortionStrength, edgeGlow, topLayerOpacity, topTexture, topTextureScale],
   );
 
+  const bottomAspectRef = useRef(0);
+  useEffect(() => {
+    const img = bottomTexture?.image;
+    if (!img?.width) return;
+    bottomAspectRef.current = img.width / Math.max(1, img.height);
+  }, [bottomTexture]);
+
   useFrame((_, delta) => {
     const mat = materialRef.current;
     if (!mat) return;
+    if (bottomAspectRef.current > 0) {
+      mat.uniforms.uBottomAspect.value = bottomAspectRef.current;
+    }
     mat.uniforms.uResolution.value.set(size.width, size.height);
     mat.uniforms.uTime.value += delta;
     mat.uniforms.uMaskTex.value = maskTextureRef.current?.texture ?? null;

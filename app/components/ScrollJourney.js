@@ -13,6 +13,14 @@ import UseCasesSection from "./UseCasesSection";
 import Header from "./Header";
 import PieterSplitSection from "./PieterSplitSection";
 import StickyStackingCardsSection from "./StickyStackingCardsSection";
+import PinnedSection from "./pinned/PinnedSection";
+import {
+  SCROLL_END_HERO,
+  SCROLL_END_VIDEO,
+  SCROLL_END_USE_CASES,
+  SCROLL_END_ORYZO,
+  SCROLL_END_CTA,
+} from "@/app/lib/pinnedSectionConstants";
 // Register GSAP plugins
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -197,11 +205,29 @@ export default function ScrollJourney() {
     };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    const refresh = () => {
+      if (!cancelled) ScrollTrigger.refresh();
+    };
+    const r1 = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        refresh();
+      });
+    });
+    window.addEventListener("load", refresh);
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(r1);
+      window.removeEventListener("load", refresh);
+    };
+  }, []);
+
   return (
     <>
       {/* ============ LOADING SCREEN ============ */}
       <div className="loading-screen">
-        <div className="loading-logo">Owl Journey</div>
+        <div className="loading-logo">riAI</div>
         <div className="loading-bar-track">
           <div className="loading-bar-fill" />
         </div>
@@ -228,71 +254,90 @@ export default function ScrollJourney() {
       {/* ============ LAYERS 5 & 6: SCROLLABLE CONTENT ============ */}
       <div className="scroll-container" ref={containerRef} id="scroll-container">
         {/* ===== HERO ===== */}
-        <section className="hero" id="hero">
-          <h1 className="hero-title">
-            Wealth Intelligence for a <em>Confident Future.</em>
-          </h1>
+        <PinnedSection scrollEnd={SCROLL_END_HERO}>
+          <section className="hero" id="hero">
+            <h1 className="hero-title">
+              Wealth, planned with <em>intention.</em>
+            </h1>
 
-          <p className="hero-subtitle">
-            Human expertise, amplified by advanced AI, to dynamically build, protect, and optimize your financial legacy.
-          </p>
+            <p className="hero-subtitle">
+              A boutique wealth practice for professionals, founders, and families who want clarity—not noise—in how their
+              plan is built and stewarded.
+            </p>
 
-          <div className="hero-actions">
-            <a href="#story" className="btn-primary">
-              Start Your Strategy
-            </a>
-            <a href="#gallery" className="btn-ghost">
-              See How It Works
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 8h10M9 4l4 4-4 4" />
-              </svg>
-            </a>
-          </div>
+            <div className="hero-actions">
+              <a href="#site-footer-region" className="btn-primary">
+                Start Your Strategy
+              </a>
+              <a href="#story" className="btn-ghost">
+                Watch our story
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 8h10M9 4l4 4-4 4" />
+                </svg>
+              </a>
+            </div>
 
-          <div className="scroll-indicator">
-            <span>Scroll</span>
-            <div className="scroll-line" />
-          </div>
-        </section>
+            <div className="hero-trust" aria-label="Trust indicators">
+              <span>15+ years experience</span>
+              <span className="hero-trust__dot" aria-hidden="true">
+                •
+              </span>
+              <span>150+ families served</span>
+              <span className="hero-trust__dot" aria-hidden="true">
+                •
+              </span>
+              <span>SEBI-registered where applicable</span>
+            </div>
+
+            <div className="scroll-indicator">
+              <span>Scroll</span>
+              <div className="scroll-line" />
+            </div>
+          </section>
+        </PinnedSection>
 
         {/* ===== VIDEO SECTION ===== */}
-        <CinematicVideoSection
-          src="/Video_Photos/video.mp4"
-          poster="/Background/BlueSky.png"
-          eyebrow="The Story"
-          headline="A cinematic journey, centered with intent."
-          subtext="Scroll to bring the frame into focus, then click to watch fullscreen. The transition uses strict bounding-box calculations for seamless expansion."
-        />
+        <PinnedSection id="story" scrollEnd={SCROLL_END_VIDEO}>
+          <CinematicVideoSection
+            src="/Video_Photos/video.mp4"
+            poster="/Background/BlueSky.png"
+            eyebrow="The Story"
+            headline="A cinematic journey, centered with intent."
+            subtext="Scroll to bring the frame into focus, then click to watch fullscreen. The transition uses strict bounding-box calculations for seamless expansion."
+            sectionId={undefined}
+          />
+        </PinnedSection>
 
         {/* ===== CINEMATIC EDITORIAL GALLERY ===== */}
         <CinematicEditorialGallery />
 
-        {/* ===== PRECEDING TEXT + USE CASES SECTION (AuXie) ===== */}
-        <div className="auxie-preceding-text">
-          <p>
-            Every journey begins with a single glance upward. Move your cursor. Scroll the page. Watch the clouds part and the sky reveal itself, one layer at a time.
-          </p>
-        </div>
-        <UseCasesSection />
+        {/* ===== USE CASES SECTION (AuXie) ===== */}
+        <PinnedSection scrollEnd={SCROLL_END_USE_CASES}>
+          <UseCasesSection />
+        </PinnedSection>
 
         {/* ===== ORYZO SCROLL-DRIVEN SECTION ===== */}
-        <OryzoSection />
+        <PinnedSection id="oryzo-section" scrollEnd={SCROLL_END_ORYZO}>
+          <OryzoSection />
+        </PinnedSection>
 
         {/* ===== CTA SECTION ===== */}
-        <section className="section-cta" id="contact">
-          <h2 className="cta-title">
-            Every journey begins with a single glance upward.
-          </h2>
-          <p className="cta-sub">
-            Move your cursor. Scroll the page. Watch the clouds
-            part and the sky reveal itself, one layer at a time.
-          </p>
-          <div className="cta-actions">
-            <a href="#hero" className="btn-primary">
-              Return to the Sky
-            </a>
-          </div>
-        </section>
+        <PinnedSection scrollEnd={SCROLL_END_CTA}>
+          <section className="section-cta" id="contact-us">
+            <h2 className="cta-title">
+              Every journey begins with a single glance upward.
+            </h2>
+            <p className="cta-sub">
+              Move your cursor. Scroll the page. Watch the clouds
+              part and the sky reveal itself, one layer at a time.
+            </p>
+            <div className="cta-actions">
+              <a href="#hero" className="btn-primary">
+                Return to the Sky
+              </a>
+            </div>
+          </section>
+        </PinnedSection>
 
         <PieterSplitSection />
 
@@ -301,10 +346,26 @@ export default function ScrollJourney() {
           <StickyStackingCardsSection />
           <div className="site-footer-region" id="site-footer-region">
             <footer className="footer" id="site-footer">
-              <p>
-                © 2026 Owl Journey. A scroll-driven storytelling experience.
-                Crafted with depth and intention.
+              <div className="footer__brand">riAI</div>
+              <p className="footer__tagline">Wealth intelligence with a steady, fiduciary-minded approach.</p>
+              <div className="footer__socials" aria-label="Social links">
+                <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.5 8h4V24h-4V8zm7.5 0h3.8v2.2h.05c.53-1 1.84-2.2 3.8-2.2 4.06 0 4.8 2.67 4.8 6.14V24h-4v-6.7c0-1.6-.03-3.66-2.23-3.66-2.23 0-2.57 1.74-2.57 3.54V24h-4V8z" />
+                  </svg>
+                </a>
+              </div>
+              <nav className="footer__legal" aria-label="Legal">
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Use</a>
+                <a href="/disclosures">Disclosures</a>
+                <a href="/cookies">Cookie Policy</a>
+              </nav>
+              <p className="footer__fineprint">
+                Investments in securities markets are subject to market risks. Read all scheme-related documents carefully.
+                Registration and regulatory details must be completed by compliance before launch.
               </p>
+              <p className="footer__copyright">© {new Date().getFullYear()} riAI. All rights reserved. v1.0</p>
             </footer>
           </div>
         </div>

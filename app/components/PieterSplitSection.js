@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -8,14 +8,17 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+const PIETER_SCRUB = 1.25;
+
 export default function PieterSplitSection() {
   const trackRef = useRef(null);
   const cardOneRef = useRef(null);
   const cardTwoRef = useRef(null);
   const cardThreeRef = useRef(null);
 
-  useLayoutEffect(() => {
-    if (!trackRef.current) return undefined;
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return undefined;
 
     const ctx = gsap.context(() => {
       const cards = [cardOneRef.current, cardTwoRef.current, cardThreeRef.current].filter(Boolean);
@@ -31,12 +34,14 @@ export default function PieterSplitSection() {
         force3D: true,
       });
 
+      gsap.set([cardTwoRef.current, cardThreeRef.current], { autoAlpha: 0 });
+
       gsap.timeline({
         scrollTrigger: {
-          trigger: trackRef.current,
+          trigger: track,
           start: "top top",
           end: "bottom bottom",
-          scrub: 1,
+          scrub: PIETER_SCRUB,
           invalidateOnRefresh: true,
         },
       })
@@ -55,6 +60,7 @@ export default function PieterSplitSection() {
         .to(
           cardTwoRef.current,
           {
+            autoAlpha: 1,
             x: 15,
             y: 20,
             rotate: 4,
@@ -67,6 +73,7 @@ export default function PieterSplitSection() {
         .to(
           cardThreeRef.current,
           {
+            autoAlpha: 1,
             x: 30,
             y: 40,
             rotate: 8,
@@ -76,14 +83,19 @@ export default function PieterSplitSection() {
           },
           0.98,
         );
-    }, trackRef);
+    }, track);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <section className="pieter-split-track" ref={trackRef} aria-label="Pieter process highlights">
-      <div className="pieter-split-sticky">
+    <section
+      ref={trackRef}
+      id="know-us-better"
+      className="pieter-split-section-track"
+      aria-label="Pieter process highlights"
+    >
+      <div className="pieter-split-section-stage">
         <div className="pieter-split">
           <div className="pieter-split__left">
             <h2 className="pieter-split__heading">
@@ -122,4 +134,3 @@ export default function PieterSplitSection() {
     </section>
   );
 }
-
